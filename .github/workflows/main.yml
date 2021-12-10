@@ -19,11 +19,11 @@ jobs:
           REMOTE_HOST: "ec2-54-87-187-244.compute-1.amazonaws.com"
           REMOTE_USER: "ec2-user"
           Target: "/home/ec2-user/SampleExpressApp"
-   #   - name: Deploy to my EC2 instance
-    #    uses: easingthemes/ssh-deploy@v2.1.5
-    #    env:
-    #      SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-     #     SOURCE: "./"
-      #    REMOTE_HOST: "ec2-3-83-64-188.compute-1.amazonaws.com"
-       #   REMOTE_USER: "ec2-user"
-        #  TARGET: "/home/ec2-user/SampleExpressApp"
+      - name: Deploy to my EC2 instance
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+         SOURCE: "./"
+         REMOTE_HOST: "ec2-3-83-64-188.compute-1.amazonaws.com"
+         REMOTE_USER: "ec2-user"
+         TARGET: "/home/ec2-user/SampleExpressApp"
