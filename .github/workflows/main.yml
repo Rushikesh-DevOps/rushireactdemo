@@ -1,27 +1,33 @@
-name: React-CI
- 
+name: prod-deploy
+
 on:
   push:
     branches:
-      - master
- 
+      - "master" 
+      
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
- 
     steps:
-      - uses: actions/checkout@v2
- 
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+        env:
+          CI: false
+          REACT_APP_NODE_ENV: development
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
- 
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
- 
-      - name: Build React App
-        run: npm install && npm run build
- 
-      - name: Deploy app build to S3 bucket
-        run: aws s3 sync ./build/ s3://rushidemoapp
+      - name: Copy files to the AWS S3 bucket
+        run: |
+          aws s3 sync --acl public-read --delete build s3://${{ secrets.S3_BUCKET_NAME }}
+      - name: Invalidate cloudfront distribution
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'
+          echo "DEPLOYED SUCCESSFULLY"
